@@ -1,0 +1,7 @@
+## 		TOKENS etc 		##
+
+sysadminctl -secureTokenStatus $currentUser
+sudo fdesetup list
+sudo fdesetup add -usertoadd username
+sudo fdesetup remove -user username
+sudo fdesetup remove -uuid UUID_that_matches_user_account

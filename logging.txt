@@ -1,0 +1,29 @@
+## 		LOGGING			##
+
+# 		calculate and report run time
+startTime=$( /bin/date '+%s' ) # epoch time
+stopTime=$( /bin/date '+%s' )
+seconds=$(( $stopTime-$startTime ))
+formattedTime=$( /bin/date -j -f "%s" "$seconds" '+%M minutes and %S seconds' )
+echo "Elapsed time: $formattedTime"
+
+/bin/date +'Started update at %-l:%M %p.' 	# 12-hr clock with am/pm
+
+/bin/date -j -f '%Y-%m-%d' 2022-06-02 +'%A, %B %-d, %Y' # conversion example, -j to not set
+
+/usr/bin/uptime | /usr/bin/awk -F 'up |, [0-9]+ users' '{ print $2 }' # consistent values
+
+/bin/date -r $time # macOS version of epoch time prettyprint
+
+
+currentDate=$(/bin/date "+%d%m%Y_%H%M") 	#echo $currentDate
+currentFullDate=$(/bin/date) 				#echo $currentFullDate
+
+# Get boot time, clean up output to something useful
+boottime=`sysctl kern.boottime | sed 's/,//g' | awk '{print $5}'`
+
+# Get the current time
+currenttime=`date +%s`
+
+# Determine total uptime
+upt=$(($currenttime - $boottime))
