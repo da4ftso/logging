@@ -2,6 +2,7 @@
 
 # script to get logs from current user's Teams session, zip and email (or not)
 #
+# 1.7.2 improvements to Finder reveal
 # 1.7.1	body copy 
 # 1.7	osascript to attach to new email, or just show in Finder; decreased delays
 # 1.6 	adding Armin's convenience function https://scriptingosx.com/2020/08/running-a-command-as-another-user/
@@ -89,9 +90,7 @@ if button returned of result = "Attach to email" then
 	
 else
 	if button returned of result = "Reveal" then
-		tell application "Finder" to activate
-		
-		tell application "Finder" to make new Finder window to (POSIX file "/Users/Shared")
+		tell application "Finder" to reveal {"/Users/Shared/Teams_Logs.zip" as POSIX file} activate
 	end if
 end if
 END
