@@ -7,7 +7,7 @@
 # 1.6 	adding Armin's convenience function https://scriptingosx.com/2020/08/running-a-command-as-another-user/
 #
 # TO-DO	pass variable of the .zip into final osascript so we can email attachment with device name
-#		jamfify this to get parameter $3, then we can ditch the loginwindow check
+#	(optionally) jamfify this to get parameter $3, then we can ditch the loginwindow check
 
 
 # variables
