@@ -44,11 +44,11 @@ runAsUser() {
 
 runAsUser /usr/bin/osascript <<'END'
 
-    tell application "Microsoft Teams" to activate
-    	delay 5
+   	tell application "Microsoft Teams" to activate
+    		delay 5
 
 	tell application "System Events" to keystroke "1" using {command down, option down, shift down}
-		delay 5
+		delay 15
 
 END
 
