@@ -1,0 +1,104 @@
+#!/bin/bash
+
+# script to get logs from current user's Teams session, zip and email (or not)
+#
+# 1.7.1	body copy 
+# 1.7	osascript to attach to new email, or just show in Finder; decreased delays
+# 1.6 	adding Armin's convenience function https://scriptingosx.com/2020/08/running-a-command-as-another-user/
+#
+# TO-DO	pass variable of the .zip into final osascript so we can email attachment with device name
+#		jamfify this to get parameter $3, then we can ditch the loginwindow check
+
+
+# variables
+
+currentUser=$(/usr/bin/stat -f%Su "/dev/console")
+
+currentUserHome=$(/usr/bin/dscl . -read "/Users/$currentUser" NFSHomeDirectory | /usr/bin/awk ' { print $NF } ')
+
+uid=$(id -u "$currentUser")
+
+devicename=$(/usr/sbin/scutil --get HostName)
+
+# convenience function to run a command as the current user
+# usage:
+#   runAsUser command arguments...
+
+runAsUser() {  
+  if [ "$currentUser" != "loginwindow" ]; then
+    launchctl asuser "$uid" sudo -u "$currentUser" "$@"
+  else
+    echo "no user logged in"
+    # uncomment the exit command
+    # to make the function exit with an error when no user is logged in
+    # exit 1
+  fi
+}
+
+
+# osascript to pass keystrokes to Teams
+# osascript must have PPPC enabled, otherwise this will fail
+
+# TO-DO	check here whether osascript has tccutil permissions for this to work, fail if not?
+
+runAsUser /usr/bin/osascript <<'END'
+
+    tell application "Microsoft Teams" to activate
+    	delay 5
+
+	tell application "System Events" to keystroke "1" using {command down, option down, shift down}
+		delay 5
+
+END
+
+
+# when a problem comes along, you must zip it
+
+logFolder=$(find $currentUserHome/Downloads -d 1 -name "*MSTeams*" -newerct '2 minute ago')
+
+/usr/bin/zip -r -9 /Users/Shared/Teams_Logs.zip "$logFolder" 1>/dev/null
+
+
+# the big reveal
+
+runAsUser /usr/bin/osascript <<'END'
+
+display alert "Log files generated." buttons {"Attach to email", "Reveal"} default button "Reveal"
+if button returned of result = "Attach to email" then
+	set x to "/Users/Shared/Teams_Logs.zip" as POSIX file
+	
+	tell application "Microsoft Outlook" to activate
+	
+	delay 5
+	
+	tell application "Microsoft Outlook"
+		
+		set newMessage to make new outgoing message with properties {subject:"Microsoft Teams Log Grabbinator 1.7.1"}
+		set content of newMessage to "Attached please find Teams logs files from \"$devicename\"."
+		make new recipient at newMessage with properties {email address:{name:"Display Name", address:"address@domain.tld"}}
+		
+		tell newMessage
+			
+			make new attachment with properties {file:x}
+			
+		end tell
+		
+		open newMessage
+		
+	end tell
+	
+else
+	if button returned of result = "Reveal" then
+		tell application "Finder" to activate
+		
+		tell application "Finder" to make new Finder window to (POSIX file "/Users/Shared")
+	end if
+end if
+END
+
+# rm (-rf) the log folder and the .zip, 
+
+rm -rf "$logFolder"
+# rm /Users/Shared/Teams_Logs.zip
+
+exit 0
