@@ -14,6 +14,10 @@ echo "Elapsed time: $formattedTime"
 /usr/bin/uptime | /usr/bin/awk -F 'up |, [0-9]+ users' '{ print $2 }' # consistent values
 
 /bin/date -r $time # macOS version of epoch time prettyprint
+# ex.:
+#  install-time: 1694126453
+#  $ date -r 1694126453
+#  Thu Sep  7 17:40:53 CDT 2023
 
 
 currentDate=$(/bin/date "+%d%m%Y_%H%M") 	#echo $currentDate
