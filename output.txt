@@ -1,0 +1,55 @@
+2.1. Standard Output & Error
+
+When executing a Bash command, a new process is created. Any errors from this process are written to the error stream, and any other output is written to the output stream.
+Bash also automatically opens multiple files for each process, denoted by a numeric File Descriptor (FD).
+Two of these FDs are Standard output (stdout) and standard error (stderr). By default, Bash directs the error stream to stderr and the output stream to stdout. For both stdout and stderr, any characters written to these FDs are displayed in the console where the command was executed.
+Additionally, Bash assigns the identifier 1 for the stdout FD and 2 for the stderr FD.
+
+2.2. Redirecting Output
+
+We can change the default destination of error and output streams by redirecting the output of our command to another FD. We redirect output using the redirection operator: >.
+For example, we can write Hello world to the file foo.txt using the echo command:
+
+echo "Hello world" > foo.txt
+
+2.3. Null Device
+
+Additionally, Linux systems have a specific device, /dev/null, that does nothing when written to. Therefore, output redirected to /dev/null will not be written anywhere.
+
+3. Silencing Output
+
+To silence the output of a command, we redirect either stdout or stderr — or both — to /dev/null. To select which stream to redirect, we need to provide the FD number to the redirection operator.
+
+3.1. Standard Output
+
+To silence non-error output, we redirect stdout to /dev/null:
+
+command 1> /dev/null
+
+By default, the redirection operator redirects stdout so we can omit the 1:
+
+command > /dev/null
+
+3.2. Standard Error
+
+To silence error output, we redirect stderr to /dev/null:
+
+command 2> /dev/null
+
+3.3. All Output
+To redirect both stdout and stderr, we must redirect stderr to stdout and then redirect stdout to /dev/null. To redirect stderr to stdout, we use the following notation:
+
+2>&1
+We combine this with redirecting stdout to /dev/null to silence all output:
+
+command > /dev/null 2>&1
+Thus, stdout is redirected to /dev/null and stderr is redirected to stdout, causing both streams to be written to /dev/null and silencing all output from our command.
+
+We can shorten this to the following Bash notation:
+
+command &> /dev/null
+Note that this shorthand is not portable and is only supported by Bash 4 or higher.
+
+Although not common, we can also separately redirect stdout and stderr to /dev/null, but we do not suggest this approach unless we are auto-generating a Bash script or the previous approaches cannot be used:
+
+command > /dev/null 2> /dev/null
