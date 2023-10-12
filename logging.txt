@@ -1,5 +1,22 @@
 ## 		LOGGING			##
 
+# Bash has a handy SECONDS builtin variable that tracks the number of
+# seconds that have passed since the shell was started. This variable
+# retains its properties when assigned to, and the value returned after
+# the assignment is the number of seconds since the assignment plus the
+# assigned value.
+# 
+# Thus, you can just set SECONDS to 0 before starting the timed event,
+# simply read SECONDS after the event, and do the time arithmetic before
+# displaying.
+
+#!/usr/bin/env bash
+
+SECONDS=0
+# do some work
+duration=$SECONDS
+echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
+
 # 		calculate and report run time
 startTime=$( /bin/date '+%s' ) # epoch time
 stopTime=$( /bin/date '+%s' )
