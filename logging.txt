@@ -48,3 +48,6 @@ currenttime=`date +%s`
 
 # Determine total uptime
 upt=$(($currenttime - $boottime))
+
+# when was it installed?
+date -r $(pkgutil --pkg-info org.vendor.name.pkg | awk 'END{print $NF}')    # Wed Nov 15 15:28:34 CST 2023
