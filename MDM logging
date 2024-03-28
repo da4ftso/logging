@@ -1,0 +1,14 @@
+# originally via Addigy blog - be careful with smart quotes
+
+> Read the Unified System Logs for the following:
+MDM Client Process for the last 24 hours in info and debug mode
+/usr/bin/log show –predicate “process='mdmclient'” –last 24h –info –debug
+If for the last 24 hours, there has been any logged error about Unable to create MDM identity, we consider the MDM identity itself to have possible issues.
+
+> Managed Client logs
+/usr/bin/log show –style syslog –predicate “process='mdmclient’ or subsystem=’com.apple.ManagedClient'”
+If the very last response we have received from the device is a message containing “Processing server request” and “OSUpdate,” we assume that the OS Updates process is the last action that is stuck.
+
+> MDM Client Process for the last 90 minutes
+/usr/bin/log show –predicate “process='mdmclient'” –last 90m
+Here we are looking for a received response for an MDM command with a status 200 for the HTTP communication in the last 90 minutes. If we do not get that response, MDM is determined to be stuck and the remediation in number 2 of this workflow takes place.
