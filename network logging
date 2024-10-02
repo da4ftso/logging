@@ -1,0 +1,9 @@
+sudo defaults write /Library/Preferences/com.apple.networkextension.control.plist LogToFile -boolean true
+
+sudo defaults write /Library/Preferences/com.apple.networkextension.control.plist LogLevel -int 7
+
+sudo defaults write -g AppleCFNetworkDiagnosticLogging -int 3
+
+# reboot
+
+sudo tcpdump -vvv -i pktap,all -n -s 0 -w ~/Desktop/CASENUMBER.pcap
