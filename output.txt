@@ -53,3 +53,10 @@ Note that this shorthand is not portable and is only supported by Bash 4 or high
 Although not common, we can also separately redirect stdout and stderr to /dev/null, but we do not suggest this approach unless we are auto-generating a Bash script or the previous approaches cannot be used:
 
 command > /dev/null 2> /dev/null
+
+# last command success
+mkdir /root/test_dir
+if [ $? -ne 0 ]; then
+  echo "Error: Failed to create directory."
+  exit 1
+fi
